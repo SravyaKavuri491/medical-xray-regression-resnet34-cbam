@@ -1,259 +1,147 @@
-# Medical Image Regression - Student Project
+# Hand X-ray Severity Prediction using ResNet34 + CBAM Attention
 
-## Project Overview
+##  Overview
+This project focuses on predicting a continuous clinical severity score from 2D hand and wrist X-ray images using deep learning.
 
-This is an educational project for medical image regression tasks. The objective is to predict disease scores (score_avg) based on X-ray images.
+Unlike classification tasks, this regression problem requires the model to capture subtle radiographic patterns such as joint spacing, bone erosion, density variations, and structural asymmetry.
 
-### Dataset Information
-
-- **Training Set**: 500 images (sub_train/)
-- **Validation Set**: 100 images (sub_val/)
-- **CSV File**: data.csv contains image metadata and labels
-
-### Evaluation Metrics
-
-- **MAE** (Mean Absolute Error): Average absolute error
-- **RMSE** (Root Mean Square Error): Root mean square error
-- **R²** (R-squared): Coefficient of determination
+To address this, an enhanced deep learning model was developed using a pretrained ResNet34 backbone, CBAM attention modules, and multi-scale feature fusion. The model significantly improves performance over a baseline CNN.
 
 ---
 
-## Project Structure
-
-```
-.
-├── data.csv              # Dataset CSV file
-├── sub_train/            # Training images directory
-├── sub_val/              # Validation images directory
-├── dataset.py            # Dataset loading module
-├── model.py              # Model definition module
-├── utils.py              # Utility functions module
-├── main.py               # Main training script
-├── inference.py          # Inference script
-├── requirements.txt      # Python dependencies
-└── README.md             # Project documentation
-```
+##  Objectives
+- Predict continuous severity scores from X-ray images  
+- Capture fine-grained radiographic features  
+- Improve performance over baseline CNN  
+- Apply attention mechanisms for better feature focus  
+- Optimize training for stable convergence  
 
 ---
 
-## Environment Setup
+##  Model Architecture
 
-### 1. Create Virtual Environment (Recommended)
+### Baseline Model
+- SimpleCNN (provided starter model)  
+- Limited depth and no pretrained features  
 
-```bash
-# Using conda
-conda create -n medical_img python=3.8
-conda activate medical_img
+### Proposed Student Model
+- ResNet34 pretrained on ImageNet  
+- CBAM attention (Channel + Spatial attention)  
+- Multi-scale feature fusion (Layer3 + Layer4)  
+- Fully connected regression head  
 
-# Or using venv
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate  # Windows
-```
+---
 
-### 2. Install Dependencies
+##  Key Features
+- Pretrained ResNet34 for strong feature extraction  
+- CBAM attention to focus on important regions and features  
+- Multi-scale feature fusion to combine local and global patterns  
+- Regularization using BatchNorm, Dropout, and Weight Decay  
+- Optimized training using AdamW and Cosine Learning Rate Scheduler  
 
-```bash
+---
+
+##  Dataset
+- Hand/Wrist X-ray images  
+- Continuous severity score labels  
+- Small dataset with high variability  
+
+Note: Dataset is not included due to size constraints.
+
+---
+
+##  Results
+
+### Baseline (SimpleCNN)
+- MAE: 26.85  
+- RMSE: 34.01  
+- R²: 0.4336  
+
+### Final Model (Optimized Student Model)
+- MAE: 16.82  
+- RMSE: 23.07  
+- R²: 0.7392  
+
+### Improvements
+- MAE reduced by 37%  
+- RMSE reduced by 32%  
+- R² improved by +0.30  
+
+---
+
+##  Training Configuration
+- Optimizer: AdamW  
+- Learning Rate: 5e-4  
+- Scheduler: Cosine Annealing  
+- Batch Size: 16  
+- Weight Decay: 1e-5  
+- Epochs: 50  
+
+---
+
+##  Inference
+- Predicts continuous severity scores  
+- Captures overall trends effectively  
+- Slight challenges with extreme values (common in regression tasks)  
+
+---
+
+## How to Run
+
+### Install dependencies
+``` bash
 pip install -r requirements.txt
 ```
 
----
-
-## Quick Start
-
-### 1. Train Baseline Model (SimpleCNN)
-
-```bash
-python main.py --model simple_cnn --epochs 50 --batch_size 32 --lr 0.001
+### Train model
+``` bash
+python main.py --model student --epochs 50 --batch_size 16 --lr 5e-4
 ```
 
-### 2. Inference on Single Image
-
-```bash
-python inference.py --checkpoint checkpoints/best_model.pth --image_path sub_val/DX100001.jpg --model simple_cnn
-```
-
-### 3. Batch Inference
-
-```bash
-python inference.py --checkpoint checkpoints/best_model.pth --image_dir sub_val --model simple_cnn --output results.csv
+### Run inference
+``` bash
+python inference.py
 ```
 
 ---
 
-## Command Line Arguments
-
-### main.py Arguments
-
-| Argument | Type | Default | Description |
-|----------|------|---------|-------------|
-| `--csv_file` | str | data.csv | Path to CSV file |
-| `--train_dir` | str | sub_train | Training images directory |
-| `--val_dir` | str | sub_val | Validation images directory |
-| `--model` | str | simple_cnn | Model type (simple_cnn/student) |
-| `--epochs` | int | 50 | Number of training epochs |
-| `--batch_size` | int | 32 | Batch size |
-| `--lr` | float | 0.001 | Learning rate |
-| `--weight_decay` | float | 1e-4 | Weight decay |
-| `--image_size` | int | 224 | Image size |
-| `--optimizer` | str | adam | Optimizer (adam/sgd/adamw) |
-| `--scheduler` | str | plateau | Learning rate scheduler |
-| `--early_stopping` | int | 15 | Early stopping patience |
-| `--save_dir` | str | checkpoints | Checkpoint save directory |
-| `--num_workers` | int | 4 | Number of data loading workers |
-| `--seed` | int | 42 | Random seed |
+##  Tech Stack
+- Python  
+- PyTorch  
+- NumPy  
+- OpenCV  
 
 ---
 
-## Student Tasks
-
-### Task Requirements
-
-1. **Understand Code Structure** (20%)
-   - Read and understand dataset.py, model.py, utils.py, main.py
-   - Understand the training process and evaluation methods
-
-2. **Run Baseline Model** (20%)
-   - Train SimpleCNN model
-   - Record training process and final performance
-   - Analyze training curves and prediction results
-
-3. **Implement Your Own Model** (40%)
-   - Implement your model in the `StudentModel` class in model.py
-   - You can consider the following approaches:
-     - Modify SimpleCNN structure (deeper/wider)
-     - Use pretrained models (ResNet, EfficientNet, etc.)
-     - Add attention mechanisms
-     - Use residual connections
-     - Try different regularization methods
-
-4. **Hyperparameter Tuning** (10%)
-   - Try different learning rates, batch sizes, optimizers, etc.
-   - Use different data augmentation strategies
-   - Record experiment results
-
-5. **Write Report** (10%)
-   - Model architecture description
-   - Experimental setup and results
-   - Performance comparison and analysis
-   - Improvement ideas and conclusions
-
-### Grading Criteria
-
-- **Code Quality**: Clear code with complete comments
-- **Model Performance**: Performance on validation set (MAE, RMSE, R²)
-- **Innovation**: Degree of innovation in model design
-- **Report Quality**: Depth and completeness of experimental analysis
-
-### Tips
-
-1. **Start Simple**: Run SimpleCNN first to understand the workflow
-2. **Incremental Improvement**: Modify one component at a time and observe effects
-3. **Record Experiments**: Use an experiment log table to record all attempts
-4. **Visualize Analysis**: Use training curves and prediction plots for analysis
-5. **Reference Literature**: Review related papers on medical image analysis
+## Key Contributions
+- Designed an advanced regression model using ResNet34 and CBAM  
+- Implemented multi-scale feature fusion  
+- Improved performance significantly over baseline  
+- Built a complete training and evaluation pipeline  
 
 ---
 
-## Model Description
-
-### SimpleCNN (Baseline Model)
-
-Simple 4-layer convolutional neural network, including:
-- 4 convolutional blocks (Conv2d + BatchNorm + ReLU + MaxPool)
-- 2 fully connected layers
-- Dropout regularization
-
-**Expected Performance**: MAE ~20-30
-
-### StudentModel (To Be Implemented)
-
-Model to be designed and implemented by students.
+##  Project Report
+Detailed explanation is included in the repository.
 
 ---
 
-## Experiment Log Template
-
-| Exp ID | Model | LR | Batch Size | Epochs | MAE | RMSE | R² | Notes |
-|--------|-------|-----|-----------|--------|-----|------|----|-------|
-| 1 | SimpleCNN | 0.001 | 32 | 50 | - | - | - | Baseline |
-| 2 | Student | ... | ... | ... | - | - | - | Custom |
+##  Google Colab
+https://colab.research.google.com/drive/1oBt1ItjRVAXTvO9Bg08UzW_aHDoGaaus?usp=sharing
 
 ---
 
-## Common Issues
+##  Academic Use & References
+This project was developed as part of a graduate-level coursework in image processing and deep learning.
 
-### Q1: Training is slow?
-- Reduce `batch_size`
-- Reduce `num_workers`
-- Use smaller `image_size`
-- If GPU is available, ensure CUDA is enabled
+The implementation is inspired by:
+- ResNet architectures  
+- CBAM attention mechanisms  
+- Deep learning techniques for medical imaging  
 
-### Q2: Out of memory?
-- Reduce `batch_size`
-- Reduce `image_size`
-- Close other programs
-
-### Q3: Model overfitting?
-- Increase data augmentation
-- Increase Dropout
-- Reduce model complexity
-- Increase weight decay
-
-### Q4: Model underfitting?
-- Increase model complexity
-- Increase training epochs
-- Adjust learning rate
-- Reduce regularization
+This work is intended for educational and research purposes.
 
 ---
 
-## Output Files
-
-After training completes, files will be generated in `checkpoints/{model_name}_{timestamp}/`:
-
-- `best_model.pth`: Best model on validation set
-- `latest_model.pth`: Model from last epoch
-- `training_history.png`: Training curves plot
-- `predictions.png`: Predictions vs true values scatter plot
-- `results.txt`: Detailed training configuration and results
-
----
-
-## Reference Resources
-
-### Deep Learning Frameworks
-- [PyTorch Official Documentation](https://pytorch.org/docs/stable/index.html)
-- [PyTorch Tutorial](https://pytorch.org/tutorials/)
-
-### Model Architectures
-- [CNN Basics](https://cs231n.github.io/)
-- [ResNet Paper](https://arxiv.org/abs/1512.03385)
-- [EfficientNet Paper](https://arxiv.org/abs/1905.11946)
-
-### Medical Image Analysis
-- Related survey papers
-- Kaggle medical image competitions
-
----
-
-## Contact
-
-For questions, please contact:
-- Instructor Email: [your_email@example.com]
-- Course Website: [course_website]
-
----
-
-## License
-
-This project is for educational purposes only.
-
----
-
-## Changelog
-
-- 2025-10-13: Project initialization
-  - Created dataset and baseline model
-  - Completed training and inference scripts
-  - Added documentation
+## 📄 License
+This project is for academic use only.
