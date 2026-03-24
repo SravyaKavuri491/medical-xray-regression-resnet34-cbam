@@ -1,0 +1,30 @@
+Training Configuration:
+============================================================
+csv_file: data.csv
+train_dir: sub_train
+val_dir: sub_val
+model: student
+epochs: 50
+batch_size: 16
+lr: 0.0005
+weight_decay: 1e-05
+image_size: 224
+optimizer: adamw
+scheduler: cosine
+early_stopping: 0
+save_dir: checkpoints
+num_workers: 4
+seed: 42
+resume: None
+
+Model Information:
+============================================================
+Total parameters: 21,508,023
+Trainable parameters: 21,508,023
+
+Final Results:
+============================================================
+Val Loss: 532.4481
+Val MAE: 16.8198
+Val RMSE: 23.0748
+Val R²: 0.7392
