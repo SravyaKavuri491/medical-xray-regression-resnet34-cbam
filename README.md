@@ -126,11 +126,6 @@ Detailed explanation is included in the repository.
 
 ---
 
-##  Google Colab
-https://colab.research.google.com/drive/1oBt1ItjRVAXTvO9Bg08UzW_aHDoGaaus?usp=sharing
-
----
-
 ##  Academic Use & References
 This project was developed as part of a graduate-level coursework in image processing and deep learning.
 
